@@ -3,12 +3,45 @@
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
+	{{> loginButtons}}
 
-  {{> hello}}
+  {{> makeDoc}}
+
+  {{#each allUserDocs}}
+  	{{> userDoc }}
+	{{/each}}
 </body>
 
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<template name="makeDoc">
+
+  
+	{{#if currentUser}}
+
+	  <form>
+	  	<input type="text" name="storyContent">
+	  	<input type="submit" value="Save Story">
+	  </form>
+
+  {{/if}}
+
+</template>
+
+<template name="userDoc">
+	<!-- show user's docs -->
+
+	{{#if currentUser}}
+
+		<span>
+
+			<p id='{{_id}}' class='storyContent'>{{storyContent}} by 
+				<strong>{{username}}</strong>
+			</p>
+
+			<button class='delete'>delete</button>
+
+		</span>
+
+	{{/if}}
+
+
 </template>
