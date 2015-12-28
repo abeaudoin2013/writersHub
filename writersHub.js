@@ -1,7 +1,7 @@
 allDocs = new Mongo.Collection('documents');
 
-
 if (Meteor.isClient) {
+
 
   Accounts.ui.config({
     passwordSignupFields: "USERNAME_ONLY"
@@ -18,6 +18,9 @@ if (Meteor.isClient) {
     }
 
   });
+
+
+
 
   // Create Doc Template Helpers
 
@@ -59,6 +62,9 @@ if (Meteor.isClient) {
 
   });
 
+
+
+
   //User's documents helpers
 
   Template.userDoc.helpers({
@@ -73,7 +79,7 @@ if (Meteor.isClient) {
 
   Template.userDoc.events({
 
-    'click .delete': function () {
+    'click #delete': function () {
 
       //this._id is the id of the item that this event is being called on
 
@@ -83,28 +89,65 @@ if (Meteor.isClient) {
 
     'dblclick .storyContent': function () {
 
-      var objectText = allDocs.findOne(this._id).storyContent
+      var objectText = allDocs.findOne(this._id).storyContent;
 
-      var objectAsParagraph = document.getElementById(this._id);
+      //set session keys
+      Session.keys = {
+        originalStoryContent: objectText,
+        storyId: this._id,
+        editorId: Meteor.userId()
+      };
+      
+      //replace button
+      var deleteButton = document.getElementById('delete');
+      var goBackButton = document.createElement("button");
+      goBackButton.id = 'goBack';
+      goBackButton.innerHTML = 'Nevermind';
+      deleteButton.parentNode.replaceChild(goBackButton, deleteButton);
 
-      var objectAsInputElement = document.createElement("input");
+      //show form and set it's value to the paragraph content
+      document.getElementById('edited').style.visibility = 'visible'
+      var editedContent = document.getElementById('editedContent');
+      editedContent.value = objectText;
 
-      objectAsInputElement.name = 'editable'
+      //hide paragraph 
+      document.getElementById(this._id).style.visibility = 'hidden';
 
-      objectAsInputElement.value = objectText;
+    },
 
-      objectAsParagraph.parentNode.replaceChild(objectAsInputElement, objectAsParagraph);
+    'click #goBack': function () {
 
+      var goBackButton = document.getElementById('goBack');
+      var deleteButton = document.createElement("button");
+      deleteButton.id = 'delete';
+      deleteButton.innerHTML = 'delete';
+      goBackButton.parentNode.replaceChild(deleteButton, goBackButton);
 
+      document.getElementById('edited').style.visibility = 'hidden';
 
-       
+      delete Session.keys.storyId;
+      delete Session.keys.originalStoryContent;
+      delete Session.keys.editorId;
+    
+    },
+
+    'submit #edited': function (event) {
+      
+      event.preventDefault();
+
+      Meteor.call('updateDoc', Session.keys.storyId, Session.keys.editorId, event.target.editedContent.value);
+
     }
 
   });
 
-  
-
 }
+
+
+
+
+
+
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
@@ -117,6 +160,18 @@ Meteor.methods({
   deleteDoc: function (docId) {
 
     allDocs.remove(docId);
+
+  },
+
+  updateDoc: function (storyId, editorId, editedContent) {
+
+    console.log(storyId, editorId, editedContent);
+    
+    allDocs.update({
+      _id: storyId,
+      storyContent: editedContent,
+      editorId: editorId
+    });
 
   }
 
