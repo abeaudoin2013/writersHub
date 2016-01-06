@@ -3,24 +3,21 @@
 
 	{{#if currentUser}}
 
-		<div class="story">
+    {{#each usersDocs}}
+	  
+			<div class="story">
 
+				{{> editDoc }}
+				<p id="{{_id}}" class="storyContent">{{storyContent}}</p> 
+				
+				<p>by <strong>{{username}}</strong></p>
 
-			<!-- <form id="edited">
-				<input type="text" value="{{storyContent}}" name="edited-story">
-				<input type="submit" value="Save Edited Copy">
-			</form> -->
-			{{> editDoc }}
-			<p id="{{_id}}" class="storyContent">{{storyContent}}</p> 
-			
-			<p>by 
-				<strong>{{username}}</strong>
-			</p>
+				<button id="delete">delete</button>
+				<button id="submit">submit</button>
 
-			<button id="delete">delete</button>
-			<button id="submit">submit</button>
+			</div>
 
-		</div>
+		{{/each}}
 
 	{{/if}}
 

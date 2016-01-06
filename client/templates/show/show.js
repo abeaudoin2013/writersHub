@@ -1,11 +1,11 @@
 
-//body helpers and events
+//this shouldn't be here. In fact, body probably shouldn't have any helpers at all.
 
 Template.body.helpers({
 
   allUserDocs: function () {
 
-    return allDocs.find({}, {sort: {createdAt: -1}});
+    return allDocs.find({});
 
   }
 
@@ -13,9 +13,10 @@ Template.body.helpers({
 
 Template.Show.helpers({
 
-    isOwner: function () {
 
-      return this.owner === Meteor.userId();
+    usersDocs: function () { 
+
+      return allDocs.find({createdBy: Meteor.userId()});
 
     }
 
