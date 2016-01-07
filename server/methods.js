@@ -26,8 +26,10 @@ Meteor.methods({
 
   deleteDoc: function (docId) {
 
+    //remove the document
     allDocs.remove(docId);
 
+    //remove the document's versions
     x = allDocVersions.findOne({originalStoryId: docId});
     allDocVersions.remove(x._id);
 
@@ -35,6 +37,7 @@ Meteor.methods({
 
   updateDoc: function (storyId, editorId, editedContent) {
 
+    //updates the doc--same as the newest version of the story's version table.
     allDocs.update(storyId, {
       $set: {
         storyContent: editedContent, 
@@ -47,25 +50,22 @@ Meteor.methods({
 
   updateVersion: function (storyId, editorId, storyContent) {
 
-    console.log("I exist");
-
+    //find the version object using storyId
     var x = allDocVersions.findOne({originalStoryId: storyId});
 
+    //save version parameters to var
     var version = {
       versionAddedAt: new Date(),
       story: storyContent,
       editorId: editorId
     };
 
+    //update the specific version
     allDocVersions.update(
       { _id: x._id},
       { $push: {storyVersions: version}}
     );
 
-  },
-
-  test: function () {
-    console.log('test');
   }
 
 });
