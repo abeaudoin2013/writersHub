@@ -1,6 +1,3 @@
-
-//this shouldn't be here. In fact, body probably shouldn't have any helpers at all.
-
 Template.body.helpers({
 
   allUserDocs: function () {
@@ -24,7 +21,7 @@ Template.Show.helpers({
 
 Template.Show.events({
 
-    "click #delete": function () {
+    "click .delete": function () {
 
       //this._id is the id of the item that this event is being called on
 
@@ -36,6 +33,8 @@ Template.Show.events({
 
       var objectText = allDocs.findOne(this._id).storyContent;
 
+      $(".Edit").show();
+
       //set session keys
       Session.keys = {
         originalStoryContent: objectText,
@@ -43,20 +42,21 @@ Template.Show.events({
         editorId: Meteor.userId()
       };
       
+      $(".Edit--form-input-content").val(objectText);
       //replace button
-      var deleteButton = document.getElementById("delete");
-      var goBackButton = document.createElement("button");
-      goBackButton.id = "goBack";
-      goBackButton.innerHTML = "Nevermind";
-      deleteButton.parentNode.replaceChild(goBackButton, deleteButton);
+      // var deleteButton = document.getElementsByName("delete");
+      // var goBackButton = document.createElement("button");
+      // goBackButton.className = "goBack";
+      // goBackButton.innerHTML = "Nevermind";
+      // deleteButton.parentNode.replaceChild(goBackButton, deleteButton);
 
-      //show form and set it"s value to the paragraph content
-      document.getElementById("edited").style.visibility = "visible"
-      var editedContent = document.getElementById("editedContent");
-      editedContent.value = objectText;
+      // //show form and set it"s value to the paragraph content
+      // document.getElementById("edited").style.visibility = "visible"
+      // var editedContent = document.getElementById("editedContent");
+      // editedContent.value = objectText;
 
-      //hide paragraph 
-      document.getElementById(this._id).style.visibility = "hidden";
+      // //hide paragraph 
+      // document.getElementById(this._id).style.visibility = "hidden";
 
     },
 
@@ -81,39 +81,6 @@ Template.Show.events({
       delete Session.keys.originalStoryContent;
       delete Session.keys.editorId;
     
-    },
-
-    "submit #edited": function (event) {
-
-      //don"t send me to a new page
-      event.preventDefault();
-
-      //call the update functiom
-      Meteor.call("updateDoc", Session.keys.storyId, Session.keys.editorId, event.target.editedContent.value);
-      Meteor.call("insertVersion", Session.keys.storyId, Session.keys.editorId, event.target.editedContent.value);
-
-      //clear value attr
-      event.target.editedContent.value = "";
-
-      //change nevermind back to delete
-      var goBackButton = document.getElementById("goBack");
-      var deleteButton = document.createElement("button");
-      deleteButton.id = "delete";
-      deleteButton.innerHTML = "delete";
-      goBackButton.parentNode.replaceChild(deleteButton, goBackButton);
-
-      //hide the edit form
-      document.getElementById("edited").style.visibility = "hidden";
-
-      //show the new paragraph
-      document.getElementById(Session.keys.storyId).style.visibility = "visible";
-
-      //clear Session keys
-      delete Session.keys.storyId;
-      delete Session.keys.originalStoryContent;
-      delete Session.keys.editorId;
-
-
     }
 
   });

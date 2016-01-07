@@ -1,25 +1,27 @@
 <template name="Show">
 	<!-- show user"s docs -->
 
-	{{#if currentUser}}
+	<div class="Show">
 
-    {{#each usersDocs}}
-	  
-			<div class="story">
+		{{#if currentUser}}
 
-				{{> editDoc }}
-				<p id="{{_id}}" class="storyContent">{{storyContent}}</p> 
-				
-				<p>by <strong>{{username}}</strong></p>
+	    {{#each usersDocs}}
+		  
+				<div class="story">
 
-				<button id="delete">delete</button>
-				<button id="submit">submit</button>
+					<p id="{{_id}}" class="storyContent">{{storyContent}}</p> 
+					
+					<p>by <strong>{{username}}</strong></p>
 
-			</div>
+					<button class="delete">delete</button>
+					<!-- <button id="submit">submit</button> -->
 
-		{{/each}}
+				</div>
 
-	{{/if}}
+			{{/each}}
 
+		{{/if}}
+
+	</div>
 
 </template>
