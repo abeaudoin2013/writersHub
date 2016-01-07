@@ -23,14 +23,14 @@
           currentUsername = Meteor.user().username;
       
       
-      Meteor.call("makeDoc", storyContent, currentUserId, currentUsername);
+      Meteor.call("createDoc", storyContent, currentUserId, currentUsername, function () {
 
-      console.log(this._id);
+        x = allDocs.findOne({storyContent: storyContent})._id;
+        Meteor.call("createVersion", x, storyContent);
 
-      //temporary. Once we have a User"s full document, we don"t want to clear the form obviously
+      });
 
       event.target.storyContent.value = "";
-
 
     }
 

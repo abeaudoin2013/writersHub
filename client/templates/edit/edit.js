@@ -16,12 +16,14 @@ Template.Edit.events({
     	          Session.keys.editorId, 
     	          text);
     
-    Meteor.call("insertVersion", 
+    Meteor.call("updateVersion", 
     	          Session.keys.storyId, 
     	          Session.keys.editorId, 
     	          text);
 
     $(".Edit--form-input-content").val("");
+
+    $(".Edit").hide();
 
   }
 

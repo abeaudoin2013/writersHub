@@ -1,6 +1,6 @@
 Meteor.methods({
 
-  makeDoc: function (storyContent, currentUserId, currentUsername) {
+  createDoc: function (storyContent, currentUserId, currentUsername) {
     allDocs.insert({
         storyContent: storyContent,
         createdBy: currentUserId,
@@ -9,13 +9,27 @@ Meteor.methods({
     });
   },
 
-  makeVersionsTable: function (storyId) {
+  createVersion: function (storyId, storyContent) {
+    
+    allDocVersions.insert({
+
+        originalStoryId: storyId,
+        storyVersions: [{
+          versionAddedAt: new Date(),
+          story: storyContent,
+          editorId: ""
+        }]
+
+      });
 
   },
 
   deleteDoc: function (docId) {
 
     allDocs.remove(docId);
+
+    x = allDocVersions.findOne({originalStoryId: docId});
+    allDocVersions.remove(x._id);
 
   },
 
@@ -31,44 +45,22 @@ Meteor.methods({
 
   },
 
-  insertVersion: function (storyId, editorId, storyContent) {
+  updateVersion: function (storyId, editorId, storyContent) {
 
-    if (allDocVersions.findOne({originalStoryId: storyId})) {
+    console.log("I exist");
 
-      console.log("I exist");
+    var x = allDocVersions.findOne({originalStoryId: storyId});
 
-      var x = allDocVersions.findOne({originalStoryId: storyId});
+    var version = {
+      versionAddedAt: new Date(),
+      story: storyContent,
+      editorId: editorId
+    };
 
-      var version = {
-        versionAddedAt: new Date(),
-        story: storyContent,
-        editorId: editorId
-      };
-
-      allDocVersions.update(
-        { _id: x._id},
-        { $push: {storyVersions: version}}
-      );
-
-      // x.storyVersions.push(version);
-
-    } else {
-
-      console.log("I don't exist yet");
-
-      allDocVersions.insert({
-
-        originalStoryId: storyId,
-        storyVersions: [{
-          versionAddedAt: new Date(),
-          story: storyContent,
-          editorId: editorId
-        }]
-
-      });
-
-    }
-
+    allDocVersions.update(
+      { _id: x._id},
+      { $push: {storyVersions: version}}
+    );
 
   },
 
