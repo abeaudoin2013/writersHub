@@ -18,8 +18,12 @@
 
       event.preventDefault();
 
+      var html = $('#summernote').summernote('code');
+
+      console.log(html);
+
       //Get story content, userId and Username
-      var storyContent = event.target.storyContent.value,
+      var storyContent = html,
           currentUserId = Meteor.userId(),
           currentUsername = Meteor.user().username;
       

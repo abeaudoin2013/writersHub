@@ -1,13 +1,18 @@
 <template name="Create">
 
-  
-	{{#if currentUser}}
+  <div class="Create">
 
-	  <form>
-	  	<input type="text" name="storyContent">
-	  	<input type="submit" value="Create New Story">
-	  </form>
+		{{#if currentUser}}
 
-  {{/if}}
+			{{> Summernote}}
+
+		  <form class="Create--form">
+		  	<input class="Create--input-text" type="text" name="storyContent">
+		  	<input class="Create--input-submit" type="submit" value="Create New Story">
+		  </form>
+
+	  {{/if}}
+	  
+  </div>
 
 </template>
